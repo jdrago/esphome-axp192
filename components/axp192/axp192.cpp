@@ -19,6 +19,14 @@ void AXP192Component::setup()
     {
         // disable LDO3 Vibration
         begin(false, true, false, false, false);
+        // TESTING... @jdrago
+        if (GetStartupReason() == "ESP_RST_POWERON")
+        {
+            ESP_LOGD(TAG, "** @jdrago: First power on, restarting ESP...");
+
+            // Reboot the ESP with the axp initialised
+            ESP.restart();
+        }
         break;
     }
     case AXP192_M5TOUGH:
@@ -64,6 +72,70 @@ void AXP192Component::update() {
     UpdateBrightness();
 }
 
+void  AXP192Component::enable_vibrator_motor(bool enable)
+{
+    // for the M5Stack Core 2, the vibrator motor is on LD03
+    uint8_t buf = Read8bit(0x12);
+    if(enable)
+        buf |= 0x08;
+    else
+        buf &= 0xF7;
+    Write1Byte(0x12, buf);
+}
+
+void  AXP192Component::force_power_off(bool enable)
+{
+    // call protected function for now
+    if(enable)
+    {
+        ESP_LOGD(TAG, "****** POWER OFF ******" );
+        PowerOff();
+    }
+}
+
+void  AXP192Component::reset_display(bool dummy)
+{
+    ESP_LOGD(TAG, "** Reset display start" );
+
+    // setup AXP_IO04 as output
+    uint8_t buf = Read8bit(0x95);
+    buf &= 0xF3;
+    buf |= 0x04;
+    Write1Byte(0x95, buf);
+
+    // pulse RST for display on AXP_IO4
+    buf = Read8bit(0x96);
+    buf &= 0xFE;
+    Write1Byte(0x96, buf);
+    delay( 10 );
+    buf |= 0x01;
+    Write1Byte(0x96, buf);
+    
+    ESP_LOGD(TAG, "** Reset display end" );
+}
+
+void  AXP192Component::enable_green_led(bool enable)
+{
+    // setup AXP_IO02 as output
+    uint8_t buf = Read8bit(0x92);
+    buf &= 0x07;
+    buf |= 0x00;
+    Write1Byte(0x92, buf);
+
+    // pulse RST for display on AXP_IO4
+    buf = Read8bit(0x94);
+    if( enable )
+    {
+        ESP_LOGD(TAG, "** GREEN LED ON **" );
+        buf &= 0xFD;
+    }
+    else
+    {
+        ESP_LOGD(TAG, "** GREEN LED OFF **" );
+        buf |= 0x01;
+    }
+    Write1Byte(0x94, buf);
+}   
 
 void AXP192Component::begin(bool disableLDO2, bool disableLDO3, bool disableRTC, bool disableDCDC1, bool disableDCDC3)
 {

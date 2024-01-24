@@ -33,7 +33,12 @@ public:
   void set_batterylevel_sensor(sensor::Sensor *batterylevel_sensor) { batterylevel_sensor_ = batterylevel_sensor; }
   void set_brightness(float brightness) { brightness_ = brightness; }
   void set_model(AXP192Model model) { this->model_ = model; }
-
+  // @jdrago added
+  void enable_vibrator_motor(bool enable);
+  void force_power_off(bool enable);
+  void reset_display(bool dummy);
+  void enable_green_led(bool enable);
+  
   // ========== INTERNAL METHODS ==========
   // (In most use cases you won't need these)
   void setup() override;
