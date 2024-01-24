@@ -5,7 +5,7 @@ This custom component it to implement support for the AXP192 for both the M5Stic
 
 *Update - 24th January 2024*  
 
-@jdrago *work in progress* has proven the concept of switching models to activate the motor/vibrator, then changing back to M5CORE2 to disable the vibrator motor.  Other changes to include access to the M5Stack Core 2 peripherals that are attached to the AXP192.
+@jdrago (work in progress) has proven the concept of switching models to activate the motor/vibrator, then changing back to M5CORE2 to disable the vibrator motor.  Other changes to include access to the M5Stack Core 2 peripherals that are attached to the AXP192.
 
 *Update - 17th April 2023*  
 
